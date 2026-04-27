@@ -8,17 +8,16 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject private var viewModel = PokemonViewModel()
+    
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+            // TODO: create a pokemon navigation menu
         }
-        .padding()
     }
 }
 
+
 #Preview {
-    ContentView()
+    
 }
