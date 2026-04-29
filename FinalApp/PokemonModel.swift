@@ -13,6 +13,10 @@ import Foundation // Has all the dependencies for the API
 struct Pokemon: Codable {
     var sprites: PokemonSprites
     var name: String
+    var base_experience: Int
+    var abilities: [PokemonAbility]
+    var moves: [PokemonMove]
+    var stats: [PokemonStats]
     var height: Int
     var weight: Int
 }
@@ -22,12 +26,25 @@ struct PokemonSprites: Codable {
     var front_default: String
 }
 
+struct PokemonAbility: Codable {
+    var ability: String
+}
+
+struct PokemonMove: Codable {
+    var move: String
+}
+
+struct PokemonStats: Codable {
+    var stat: String
+    var base_stat: Int
+}
+
+struct PokemonType: Codable {
+    var slot: Int
+    var type: String
+}
+
 // This is the mock sample I will use for testing
 extension Pokemon {
-    static let sample = Pokemon(
-        sprites: PokemonSprites(front_default: "https://github.com/PokeAPI/sprites/blob/253846168bbf04ee951a79cd28aed742df48053d/sprites/pokemon/25.png?raw=true"),
-        name: "pikachu",
-        height: 4,
-        weight: 60,
-    )
+    // TODO: Create sample
 }
