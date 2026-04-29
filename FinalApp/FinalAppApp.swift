@@ -11,7 +11,7 @@ import SwiftUI
 struct FinalAppApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            DashboardView() //This must match the name of the view you are trying to open
         }
     }
 }
