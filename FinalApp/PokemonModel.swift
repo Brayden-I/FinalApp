@@ -24,11 +24,11 @@ struct PokemonSprites: Codable {
 }
 
 // The API nests the type name inside a slot and then a type object, so we need both structs
-struct PokemonTypeSlot: Codable {
+struct PokemonTypeSlot: Codable, Hashable {
     var type: PokemonType
 }
 
-struct PokemonType: Codable {
+struct PokemonType: Codable, Hashable {
     var name: String
 }
 
@@ -40,6 +40,19 @@ struct PokemonStat: Codable {
 
 struct StatInfo: Codable {
     var name: String
+}
+
+// These hold the responses from the API
+struct PokemonListEntry: Codable, Identifiable {
+    var name: String
+    var url: String
+    
+    var id: String? { name }
+}
+
+struct PokemonListResponse: Codable {
+    var count: Int
+    var results: [PokemonListEntry]
 }
 
 // This is the mock sample used for previews so we dont have to hit the API every time

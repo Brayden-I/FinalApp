@@ -11,17 +11,10 @@ struct DashboardView: View {
     
     var body: some View {
         TabView {
-            NavigationStack {
-                
-                VStack() {
-                    
+            BrowseView()
+                .tabItem {
+                    Label("Pokedex", systemImage: "phone.fill")
                 }
-                .padding()
-                .navigationBarTitle("Pokedex")
-                
-            }.tabItem {
-                Label("Pokedex", systemImage: "phone.fill")
-            }
             AboutView()
                 .tabItem {
                         Label("About", systemImage: "info.circle")
