@@ -7,46 +7,60 @@
 
 import SwiftUI
 
-// This is the browse tab view. It will show pages of pokemon icons and allow the user to click to view it's details.
+// This is the browse tab. Shows a paged grid of Pokemon the user can tap to see details
 struct BrowseView: View {
-    @StateObject var viewModel: PokemonViewModel = .init()
-    
-    var body: some View {
-        
-        NavigationView {
-            VStack {
-                
-                //Main logic - will say loading until page of pokemon has been fetched - if there is an issue getting the pokemon it will say there is an error
-                ZStack {
-                    if viewModel.isLoading {
-                        ProgressView("Loading pokemon")
-                    } else if viewModel.errorMessage != nil {
-                        Spacer()
-                        VStack {
-                            Image("exclamationmark.triangle.fill")
-                            Text("There was an issue fetching pokemon page")
-                        }
-                    }
-                    else { // Use a for loop to display all pokemon icons on the page
-                        ScrollView { // Use ScrollView for Grids
-                            let columns = [GridItem(.flexible()), GridItem(.flexible())]
+    @State var viewModel = PokemonViewModel()
 
-                            LazyVGrid(columns: columns) {
-                                ForEach(viewModel.pokemonList) { pokemon in
-                                    NavigationLink(destination: PokemonDetailView(pokemonName: pokemon.name, viewModel: self.viewModel)) {
-                                        AsyncImage(url: self.spriteURL(for: pokemon.name))
+    var body: some View {
+        NavigationStack {
+            VStack {
+                if viewModel.isLoading {
+                    ProgressView("Loading...")
+                } else if viewModel.errorMessage != nil {
+                    Text("Failed to load Pokémon")
+                } else {
+                    ScrollView {
+                        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
+                            ForEach(viewModel.pokemonList) { entry in
+                                NavigationLink(destination: DetailView(pokemonName: entry.name, viewModel: viewModel)) {
+                                    VStack {
+                                        AsyncImage(url: spriteURL(for: entry)) { phase in
+                                            if case .success(let image) = phase {
+                                                image.resizable().scaledToFit()
+                                            } else {
+                                                Color.gray.opacity(0.2)
+                                            }
                                         }
+                                        .frame(width: 80, height: 80)
+                                        Text(entry.name.capitalized)
                                     }
                                 }
                             }
                         }
                     }
                 }
+
+                HStack {
+                    Button("Previous") { Task { await viewModel.previousPage() } }
+                        .disabled(!viewModel.hasPrevious)
+                    Spacer()
+                    Text("Page \(viewModel.currentPage + 1)")
+                    Spacer()
+                    Button("Next") { Task { await viewModel.nextPage() } }
+                        .disabled(!viewModel.hasNext)
+                }
+                .padding()
             }
+            .navigationTitle("Pokédex")
+            .task { await viewModel.loadCurrentPage() }
         }
-    // Helpers
-    func spriteURL(for name: String) -> URL {
-        URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/\(name).png")!
+    }
+
+    // Pulls the ID from the entry url to build the sprite link
+    func spriteURL(for entry: PokemonListEntry) -> URL? {
+        let trimmed = entry.url.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        let id = trimmed.components(separatedBy: "/").last ?? ""
+        return URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/\(id).png")
     }
 }
 
