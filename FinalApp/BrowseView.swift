@@ -22,7 +22,7 @@ struct BrowseView: View {
                     ScrollView {
                         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
                             ForEach(viewModel.pokemonList) { entry in
-                                NavigationLink(destination: DetailView(pokemonName: entry.name, viewModel: viewModel)) {
+                                NavigationLink(destination: PokemonDetailView(pokemonName: entry.name, viewModel: viewModel)) {
                                     VStack {
                                         AsyncImage(url: spriteURL(for: entry)) { phase in
                                             if case .success(let image) = phase {
@@ -55,7 +55,7 @@ struct BrowseView: View {
             .task { await viewModel.loadCurrentPage() }
         }
     }
-
+    
     // Pulls the ID from the entry url to build the sprite link
     func spriteURL(for entry: PokemonListEntry) -> URL? {
         let trimmed = entry.url.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
