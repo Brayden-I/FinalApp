@@ -36,7 +36,7 @@ struct PokemonDetailView: View {
                         Text("Name: \(pokemon.name)")
                         Spacer()
                         
-                        AsyncImage(url: self.spriteURL(for: pokemon.sprites.front_default))
+                        AsyncImage(url: URL(string: pokemon.sprites.front_default))
                         
                         Spacer()
                         HStack{ // Pokemon type
@@ -69,10 +69,6 @@ struct PokemonDetailView: View {
             }
             isLoading = false
         }
-    }
-    // Helpers
-    func spriteURL(for name: String) -> URL {
-        URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/\(name).png")!
     }
 }
 
